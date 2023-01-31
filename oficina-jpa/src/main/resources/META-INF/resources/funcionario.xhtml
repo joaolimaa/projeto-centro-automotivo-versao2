@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <h:outputStylesheet name="estilos-gerais.css" library="css"/>
+    <title>Centro Automotivo New Car</title>
+</h:head>
+
+<h:body style="margin: 0; height: 100%;">
+
+    <header>
+        <ui:include src="header.xhtml" />
+    </header>
+
+    <main id="conteudo">
+        <p:growl id="mensagem" />
+        <h:form id="form">
+
+            <p:growl id="messages" showDetail="true" />
+
+            <div style="width: 80%; margin-left: 160px; display:flex; justify-content:center; align-items:center;">
+                <p:dataTable id="lista" widgetVar="dtProducts" var="pessoa" value="#{pessoaControl.funcionarios}"
+                             reflow="true" styleClass="products-table" rowKey="#{pessoa.id}"
+                             paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom"
+                >
+                    <f:facet name="header">
+                        <div class="right">
+                            <p:commandButton value="Novo" icon="pi pi-plus" action="#{pessoaControl.limpar()}" update="form:pessoaDiag"
+                                             styleClass="ui-button-success" onclick="PF('formulario').show()"
+                                             style="margin-right: .5rem; background:black">
+                            </p:commandButton>
+                            <span class="filter-container ui-input-icon-left"> <i class="pi pi-search"></i>
+                                <p:inputText id="globalFilter" onkeyup="PF('dtProducts').filter()" placeholder="Pesquisa" />
+                        </span>
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect" update="form:lista" />
+                    <p:ajax event="rowUnselect" update="form:lista" />
+                    <p:ajax event="rowSelectCheckbox" update="form:lista" />
+                    <p:ajax event="rowUnselectCheckbox" update="form:lista" />
+                    <p:ajax event="toggleSelect" update="form:lista" />
+
+                    <p:column style="width:12%" headerText="Id" sortBy="#{pessoa.id}" filterBy="#{pessoa.id}">
+                        <h:outputText value="#{pessoa.id}" />
+                    </p:column>
+                    <p:column style="width:12%" headerText="Nome" sortBy="#{pessoa.nome}" filterBy="#{pessoa.nome}">
+                        <h:outputText value="#{pessoa.nome}" />
+                    </p:column>
+
+                    <p:column style="width:12%" headerText="Telefone" sortBy="#{pessoa.telefone}" filterBy="#{pessoa.telefone}">
+                        <h:outputText value="#{pessoa.telefone}" />
+                    </p:column>
+
+                    <p:column style="width:12%" headerText="Funcionário" sortBy="#{pessoa.funcionario}" filterBy="#{pessoa.funcionario}">
+                        <h:outputText value="#{pessoa.funcionario}" />
+                    </p:column>
+
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update="form:pessoaDiag"
+                                         action="#{pessoaControl.setPessoa(pessoa)}" onclick="PF('formulario').show()"
+                                         style="border: none; margin-right:10px; background:black">
+                            <p:resetInput target="form:lista" />
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-trash"
+                                         update=":mensagem form:lista" action="#{pessoaControl.excluir(pessoa.id)}"
+                                         style="border: none; background:#F7CF21; color:black">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:dialog header="Funcionário" widgetVar="formulario" minHeight="40" showEffect="fade" closeOnEscape="true">
+                <p:panelGrid id="pessoaDiag" columns="4">
+
+                    <h:outputText value="Nome:"/>
+                    <p:inputText value="#{pessoaControl.pessoa.nome}"/>
+
+                    <p:outputLabel value="CPF:" />
+                    <p:inputMask value="#{pessoaControl.pessoa.cpf}" mask="999.999.999-99" validateMask="true"/>
+
+                    <h:outputText value="Endereço:"/>
+                    <p:inputText value="#{pessoaControl.pessoa.endereco}"/>
+
+                    <h:outputText value="Bairro:"/>
+                    <p:inputText value="#{pessoaControl.pessoa.bairro}"/>
+
+                    <p:outputLabel value="Telefone:" />
+                    <p:inputMask value="#{pessoaControl.pessoa.telefone}" mask="(99) 9 9999-9999" validateMask="true"/>
+
+                    <p:outputLabel value="WhatsApp" />
+                    <p:selectBooleanButton onLabel="Sim" offLabel="Não"
+                                           onIcon="pi pi-check" offIcon="pi pi-times" style="width:6rem" value="#{pessoaControl.pessoa.whatsapp}"/>
+
+                    <p:outputLabel value="CEP:" />
+                    <p:inputMask id="phone" value="#{pessoaControl.pessoa.cep}" mask="99999-999" validateMask="true"/>
+
+                    <h:outputText value="Município:"/>
+                    <p:autoComplete id="municipio" value="#{pessoaControl.pessoa.municipio}"
+                                    completeMethod="#{pessoaControl.completeMunicipio}"
+                                    var="municipio" itemLabel="#{municipio.nome}" itemValue="#{municipio}"
+                                    converter="converter" forceSelection="true" scrollHeight="250"/>
+
+                    <p:outputLabel value="Funcionário" />
+                    <p:selectBooleanButton onLabel="Sim" offLabel="Não"
+                                           onIcon="pi pi-check" offIcon="pi pi-times" style="width:6rem" value="#{pessoaControl.pessoa.funcionario}"/>
+
+                </p:panelGrid>
+                <p:commandButton value="Salvar" action="#{pessoaControl.salvar}" update=":mensagem" onclick="PF('formulario').close()" style="margin-top: 20px; background: #F7CF21; border: none; font-weight: bold"/>
+            </p:dialog>
+        </h:form>
+    </main>
+
+    <footer id="rodape">
+        <ui:include src="footer.xhtml" />
+    </footer>
+
+</h:body>
+</html>

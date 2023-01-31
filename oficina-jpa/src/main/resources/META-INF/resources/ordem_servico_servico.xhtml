@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <h:outputStylesheet name="estilos-gerais.css" library="css"/>
+    <title>Centro Automotivo New Car</title>
+</h:head>
+
+<h:body style="margin: 0; height: 100%;">
+
+    <header>
+        <ui:include src="header.xhtml" />
+    </header>
+
+    <main id="conteudo">
+        <p:growl id="mensagem" />
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+            <div style="width: 80%; margin-left: 160px; display:flex; justify-content:center; align-items:center;">
+                <p:dataTable id="lista" widgetVar="dtProducts" var="ordemServicoServico" value="#{ordemServicoServicoControl.listaOrdemServicoServico}"
+                             reflow="true" styleClass="products-table" rowKey="#{ordemServicoServico.id}"
+                             paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom"
+                >
+                    <f:facet name="header">
+                        <div class="right">
+                            <p:commandButton value="Novo" icon="pi pi-plus" action="#{ordemServicoServicoControl.limpar()}" update="form:osServicoDiag"
+                                             styleClass="ui-button-success" onclick="PF('formulario').show()"
+                                             style="margin-right: .5rem; background:black">
+                            </p:commandButton>
+                            <span class="filter-container ui-input-icon-left"> <i class="pi pi-search"></i>
+                                <p:inputText id="globalFilter" onkeyup="PF('dtProducts').filter()" placeholder="Pesquisa" />
+                        </span>
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect" update="form:lista" />
+                    <p:ajax event="rowUnselect" update="form:lista" />
+                    <p:ajax event="rowSelectCheckbox" update="form:lista" />
+                    <p:ajax event="rowUnselectCheckbox" update="form:lista" />
+                    <p:ajax event="toggleSelect" update="form:lista" />
+
+                    <p:column style="width:12%" headerText="Id" sortBy="#{ordemServicoServico.id}" filterBy="#{ordemServicoServico.id}">
+                        <h:outputText value="#{ordemServicoServico.id}" />
+                    </p:column>
+
+                    <p:column style="width:12%" headerText="Cliente da OS" sortBy="#{ordemServicoServico.ordemServico.cliente.nome}" filterBy="#{ordemServicoServico.ordemServico.cliente.nome}">
+                        <h:outputText value="#{ordemServicoServico.ordemServico.cliente.nome}" />
+                    </p:column>
+
+                    <p:column style="width:12%" headerText="QTD Serviços" sortBy="#{ordemServicoServico.quantidade}" filterBy="#{ordemServicoServico.quantidade}">
+                        <h:outputText value="#{ordemServicoServico.quantidade}" />
+                    </p:column>
+
+                    <p:column style="width:12%" headerText="Total" sortBy="#{ordemServicoServico.preco}" filterBy="#{ordemServicoServico.preco}">
+                        <h:outputText value="#{ordemServicoServico.preco}" />
+                    </p:column>
+
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update="form:osServicoDiag"
+                                         action="#{ordemServicoServicoControl.setOrdemServicoServico(ordemServicoServico)}" onclick="PF('formulario').show()"
+                                         style="border: none; margin-right:10px; background:black">
+                            <p:resetInput target="form:lista" />
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-trash"
+                                         update=":mensagem form:lista" action="#{ordemServicoServicoControl.excluir(ordemServicoServico.id)}"
+                                         style="border: none; background:#F7CF21; color:black">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:dialog header="Ordem Serviço - Serviços" widgetVar="formulario" minHeight="40" showEffect="fade" closeOnEscape="true">
+                <p:panelGrid id="osServicoDiag" columns="2">
+
+                    <h:outputText value="Ordem de Servico:"/>
+                    <p:autoComplete id="osServico" value="#{ordemServicoServicoControl.ordemServicoServico.ordemServico}"
+                                    completeMethod="#{ordemServicoServicoControl.completeOrdemServico}"
+                                    var="ordemServico" itemLabel="#{ordemServico.cliente.nome}" itemValue="#{ordemServico}"
+                                    converter="converter" forceSelection="true" scrollHeight="250"/>
+
+                    <h:outputText value="Servicos:"/>
+                    <p:selectManyMenu value="#{ordemServicoServicoControl.ordemServicoServico.servicos}" converter="#{ordemServicoServicoControl.servicoConverter}"
+                                      var="s" filter="true" filterMatchMode="contains" showCheckbox="true" collectionType="java.util.ArrayList">
+                        <f:selectItems value="#{servicoControl.servicos}" var="servico" itemLabel="#{servico.nome}" itemValue="#{servicos}" />
+                        <p:column>
+                            <h:outputText value="#{s.nome}" />
+                        </p:column>
+                    </p:selectManyMenu>
+
+                </p:panelGrid>
+                <p:commandButton value="Salvar" action="#{ordemServicoServicoControl.salvar}" update=":mensagem" onclick="PF('formulario').close()" style="margin-top: 20px; background: #F7CF21; border: none; font-weight: bold"/>
+            </p:dialog>
+        </h:form>
+    </main>
+
+    <footer id="rodape">
+        <ui:include src="footer.xhtml" />
+    </footer>
+
+</h:body>
+</html>

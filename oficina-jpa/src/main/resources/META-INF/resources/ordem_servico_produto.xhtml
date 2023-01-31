@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <h:outputStylesheet name="estilos-gerais.css" library="css"/>
+    <title>Centro Automotivo New Car</title>
+</h:head>
+
+<h:body style="margin: 0; height: 100%;">
+
+    <header>
+        <ui:include src="header.xhtml" />
+    </header>
+
+    <main id="conteudo">
+        <p:growl id="mensagem" />
+        <h:form id="form">
+            <p:growl id="messages" showDetail="true" />
+
+            <div style="width: 80%; margin-left: 160px; display:flex; justify-content:center; align-items:center;">
+                <p:dataTable id="lista" widgetVar="dtProducts" var="ordemServicoProduto" value="#{ordemServicoProdutoControl.listaOrdemServicoProduto}"
+                             reflow="true" styleClass="products-table" rowKey="#{ordemServicoProduto.id}"
+                             paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom"
+                >
+                    <f:facet name="header">
+                        <div class="right">
+                            <p:commandButton value="Novo" icon="pi pi-plus" action="#{ordemServicoProdutoControl.limpar()}" update="form:osProdutoDiag"
+                                             styleClass="ui-button-success" onclick="PF('formulario').show()"
+                                             style="margin-right: .5rem; background:black">
+                            </p:commandButton>
+                            <span class="filter-container ui-input-icon-left"> <i class="pi pi-search"></i>
+                                <p:inputText id="globalFilter" onkeyup="PF('dtProducts').filter()" placeholder="Pesquisa" />
+                        </span>
+                        </div>
+                    </f:facet>
+
+                    <p:ajax event="rowSelect" update="form:lista" />
+                    <p:ajax event="rowUnselect" update="form:lista" />
+                    <p:ajax event="rowSelectCheckbox" update="form:lista" />
+                    <p:ajax event="rowUnselectCheckbox" update="form:lista" />
+                    <p:ajax event="toggleSelect" update="form:lista" />
+
+                    <p:column style="width:12%" headerText="Id" sortBy="#{ordemServicoProduto.id}" filterBy="#{ordemServicoProduto.id}">
+                        <h:outputText value="#{ordemServicoProduto.id}" />
+                    </p:column>
+
+                    <p:column style="width:12%" headerText="Cliente da OS" sortBy="#{ordemServicoProduto.ordemServico.cliente.nome}" filterBy="#{ordemServicoProduto.ordemServico.cliente.nome}">
+                        <h:outputText value="#{ordemServicoProduto.ordemServico.cliente.nome}" />
+                    </p:column>
+
+                    <p:column style="width:12%" headerText="Produto" sortBy="#{ordemServicoProduto.produto.nome}" filterBy="#{ordemServicoProduto.produto.nome}">
+                        <h:outputText value="#{ordemServicoProduto.produto.nome}" />
+                    </p:column>
+
+                    <p:column style="width:12%" headerText="Quantidade" sortBy="#{ordemServicoProduto.quantidade}" filterBy="#{ordemServicoProduto.quantidade}">
+                        <h:outputText value="#{ordemServicoProduto.quantidade}" />
+                    </p:column>
+
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update="form:osProdutoDiag"
+                                         action="#{ordemServicoProdutoControl.setOrdemServicoServico(ordemServicoServico)}" onclick="PF('formulario').show()"
+                                         style="border: none; margin-right:10px; background:black">
+                            <p:resetInput target="form:lista" />
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-trash"
+                                         update=":mensagem form:lista" action="#{ordemServicoProdutoControl.excluir(ordemServicoProduto.id)}"
+                                         style="border: none; background:#F7CF21; color:black">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:dialog header="Ordem Serviço - Produtos" widgetVar="formulario" minHeight="40" showEffect="fade" closeOnEscape="true">
+                <p:panelGrid id="osProdutoDiag" columns="2">
+
+                    <h:outputText value="Ordem de Servico:"/>
+                    <p:autoComplete id="osProduto" value="#{ordemServicoProdutoControl.ordemServicoProduto.ordemServico}"
+                                    completeMethod="#{ordemServicoProdutoControl.completeOrdemServico}"
+                                    var="ordemServico" itemLabel="#{ordemServico.cliente.nome}" itemValue="#{ordemServico}"
+                                    converter="converter" forceSelection="true" scrollHeight="250"/>
+
+                    <h:outputText value="Produto:"/>
+                    <p:autoComplete id="produtoOs" value="#{ordemServicoProdutoControl.ordemServicoProduto.produto}"
+                                    completeMethod="#{ordemServicoProdutoControl.completeProduto}"
+                                    var="produto" itemLabel="#{produto.nome}" itemValue="#{produto}"
+                                    converter="converter" forceSelection="true" scrollHeight="250"/>
+
+                    <h:outputLabel value="Quantidade: " />
+                    <p:spinner value="#{ordemServicoProdutoControl.ordemServicoProduto.quantidade}" />
+
+                </p:panelGrid>
+                <p:commandButton value="Salvar" action="#{ordemServicoProdutoControl.salvar}" update=":mensagem" onclick="PF('formulario').close()" style="margin-top: 20px; background: #F7CF21; border: none; font-weight: bold"/>
+            </p:dialog>
+        </h:form>
+    </main>
+
+    <footer id="rodape">
+        <ui:include src="footer.xhtml" />
+    </footer>
+
+</h:body>
+</html>

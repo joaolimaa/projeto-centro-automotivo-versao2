@@ -1,0 +1,30 @@
+tela de cadastro de pessoas 
+	com botao de on e off (pra definir se é cliente ou colaborador)
+ 
+
+tela de cadastro de veículos
+	tela de cadastrar marca
+	tela de cadastrar modelo
+
+
+tela de orçamento e nota fiscal
+	// definir se vai usar
+
+
+tela de ordem de serviço
+
+
+tela de cadastrar serviço
+
+
+tela de estoque
+	cadastro de peças e afins
+
+
+botão de retornar página
+
+
+botão de controle de acesso
+	
+
+

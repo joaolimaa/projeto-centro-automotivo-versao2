@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+	<h:head>
+		<h:outputStylesheet name="estilos-gerais.css" library="css"/>
+		<title>Centro Automotivo New Car</title>
+	</h:head>
+
+	<h:body style="margin: 0">
+		<p:graphicImage name="bannerOficina.jpg" library="img-project" style=" width: 100%"/>
+		<main id="conteudo" class="left">
+			<div class="grid">
+				<h:form>
+					<div style="background-color: white; border-radius: 5%; padding: 30px 20px">
+						<div class="col-5 flex align-items-center justify-content-center">
+							<div class="ui-fluid">
+								<div class="field" style="margin-bottom: 20px">
+									<p:outputLabel for="email" value="Email:"/>
+									<p:inputText id="email" value="#{usuarioControl.usuario.email}" />
+								</div>
+								<div class="field" style="margin-bottom: 20px">
+									<p:outputLabel for="senha" value="Senha:"/>
+									<p:password id="senha" value="#{usuarioControl.usuario.senha}"/>
+								</div>
+								<p:commandButton value="Entrar" action="#{usuarioControl.validaUsuario(usuarioControl.usuario)}" style="background: #F7CF21; border: none; font-weight: bold"/>
+							</div>
+						</div>
+					</div>
+				</h:form>
+			</div>
+		</main>
+
+		<footer id="rodape">
+			<ui:include src="footer.xhtml" />
+		</footer>
+	</h:body>
+</html>

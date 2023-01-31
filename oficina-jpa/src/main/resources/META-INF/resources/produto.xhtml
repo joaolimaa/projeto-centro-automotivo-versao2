@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <h:outputStylesheet name="estilos-gerais.css" library="css"/>
+    <title>Centro Automotivo New Car</title>
+</h:head>
+
+<h:body style="margin: 0; height: 100%;">
+
+    <header>
+        <ui:include src="header.xhtml" />
+    </header>
+
+    <main id="conteudo">
+        <p:growl id="mensagem" />
+        <h:form id="form">
+            <div style="width: 80%; margin-left: 160px; display:flex; justify-content:center; align-items:center;">
+                <p:dataTable id="lista" widgetVar="dtProducts" var="produto" value="#{produtoControl.produtos}"
+                             reflow="true" styleClass="products-table" rowKey="#{produto}"
+                             paginator="true" rows="10" rowSelectMode="add" paginatorPosition="bottom"
+                >
+                    <f:facet name="header">
+                        <div class="right">
+                            <p:commandButton value="Novo" icon="pi pi-plus" action="#{produtoControl.limpar()}" update="form:produtoDiag"
+                                             styleClass="ui-button-success" onclick="PF('formulario').show()"
+                                             style="margin-right: .5rem; background:black">
+                            </p:commandButton>
+                            <span class="filter-container ui-input-icon-left"> <i class="pi pi-search"></i>
+                                <p:inputText id="globalFilter" onkeyup="PF('dtProducts').filter()" placeholder="Pesquisa" />
+                        </span>
+                        </div>
+                    </f:facet>
+
+                        <p:ajax event="rowSelect" update="form:lista" />
+                        <p:ajax event="rowUnselect" update="form:lista" />
+                        <p:ajax event="rowSelectCheckbox" update="form:lista" />
+                        <p:ajax event="rowUnselectCheckbox" update="form:lista" />
+                        <p:ajax event="toggleSelect" update="form:lista" />
+
+                        <p:column style="width:12%" headerText="Id" sortBy="#{produto.id}" filterBy="#{produto.id}">
+                            <h:outputText value="#{produto.id}" />
+                        </p:column>
+                        <p:column style="width:12%" headerText="Produto" sortBy="#{produto.nome}" filterBy="#{produto.nome}">
+                            <h:outputText value="#{produto.nome}" />
+                        </p:column>
+
+                        <p:column style="width:12%" headerText="Preço" sortBy="#{produto.precoVenda}" filterBy="#{produto.precoVenda}">
+                            <h:outputText value="#{produto.precoVenda}">
+                                <f:convertNumber type="currency"
+                                                 currencySymbol="R$"
+                                                 maxIntegerDigits="5"
+                                                 maxFractionDigits="2"/>
+                            </h:outputText>
+                        </p:column>
+
+                    <p:column style="width:12%" headerText="Quantidade" sortBy="#{produto.quantidade}" filterBy="#{produto.quantidade}">
+                        <h:outputText value="#{produto.quantidade}" />
+                    </p:column>
+
+                    <p:column exportable="false">
+                        <p:commandButton icon="pi pi-pencil" update="form:produtoDiag"
+                                         action="#{produtoControl.setProduto(produto)}" onclick="PF('formulario').show()"
+                                         style="border: none; margin-right:10px; background:black">
+                            <p:resetInput target="form:lista" />
+                        </p:commandButton>
+                        <p:commandButton icon="pi pi-trash"
+                                         update=":mensagem form:lista" action="#{produtoControl.excluir(produto.id)}"
+                                         style="border: none; background:#F7CF21; color:black">
+                        </p:commandButton>
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:dialog header="Produto" widgetVar="formulario" minHeight="40" showEffect="fade" closeOnEscape="true">
+                <p:panelGrid id="produtoDiag" columns="2">
+                    <h:outputText value="Nome:"/>
+                    <p:inputText value="#{produtoControl.produto.nome}"/>
+
+                <p:outputLabel value="Preço:"/>
+                <p:inputNumber id="preco" value="#{produtoControl.produto.precoVenda}" symbol=" R$"
+                               symbolPosition="s" decimalSeparator="," thousandSeparator="."/>
+
+                <p:outputLabel value="Quantidade:"/>
+                <p:inputNumber id="quantidade" value="#{produtoControl.produto.quantidade}"/>
+            </p:panelGrid>
+
+                <p:commandButton value="Salvar" action="#{produtoControl.salvar}" update=":mensagem" onclick="PF('formulario').close()" style="margin-top: 20px; background: #F7CF21; border: none; font-weight: bold"/>
+            </p:dialog>
+        </h:form>
+    </main>
+    <footer id="rodape">
+        <ui:include src="footer.xhtml" />
+    </footer>
+
+</h:body>
+</html>
