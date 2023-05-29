@@ -1,6 +1,6 @@
 # Projeto Centro Automotivo (Continuação)
 
-Este é o repositório da continuação do projeto Centro Automotivo, que busca melhorar e aprimorar as funcionalidades implementadas na versão anterior. Esta nova versão apresenta diversas melhorias e otimizações em relação ao projeto inicial.
+Este é o repositório da continuação do projeto Centro Automotivo, que busca melhorar e aprimorar as funcionalidades implementadas na versão anterior.
 
 ## Contexto do Projeto 📚
 
